@@ -23,4 +23,17 @@ class ProductController {
     public function searchProducts($query) {
         return $this->model->searchProducts($query);
     }
+
+    public function createProduct($ten, $gia, $anh = null, $idDanhmuc = null) {
+        return $this->model->addProduct($ten, $gia, $anh, $idDanhmuc);
+    }
+
+    public function updateProduct($id, $ten, $gia, $anh = null, $idDanhmuc = null) {
+        return $this->model->updateProduct($id, $ten, $gia, $anh, $idDanhmuc);
+    }
+
+    public function deleteProductById($id) {
+        return $this->model->deleteProduct($id);
+    }
+    
 }

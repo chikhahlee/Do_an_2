@@ -12,7 +12,8 @@ if (isset($_POST['login_submit'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $sql = "SELECT id, email, password, ten FROM users WHERE email = ? LIMIT 1";
+    // include 'role' so we can detect admin users from DB
+    $sql = "SELECT id, email, password, ten, role FROM users WHERE email = ? LIMIT 1";
     $stmt = $conn->prepare($sql);
     
     if ($stmt) {
@@ -26,6 +27,23 @@ if (isset($_POST['login_submit'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['ten'];
                 $_SESSION['is_logged_in'] = true;
+
+                // mark admin based on DB role if available, otherwise fallback to configured admin emails
+                $isAdmin = false;
+                if (isset($user['role']) && $user['role'] === 'admin') {
+                    $isAdmin = true;
+                } else {
+                    $cfg = [];
+                    $cfgPath = __DIR__ . '/../Other/config.php';
+                    if (file_exists($cfgPath)) {
+                        $cfg = include $cfgPath;
+                    }
+                    $adminEmails = isset($cfg['admin_emails']) && is_array($cfg['admin_emails']) ? $cfg['admin_emails'] : [];
+                    if (in_array($user['email'], $adminEmails, true)) {
+                        $isAdmin = true;
+                    }
+                }
+                $_SESSION['is_admin'] = $isAdmin;
 
                 header("Location: /index.php");
                 $stmt->close();

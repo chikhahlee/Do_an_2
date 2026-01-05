@@ -62,6 +62,9 @@ $categories = $ctl->getCategories();
         <a href="/index.php">Trang Chủ</a>
         <a href="/View/categories-list.php">Danh Mục</a>
         <a href="/View/product-list.php">Sản Phẩm</a>
+        <?php if (!empty($_SESSION['is_admin'])): ?>
+            <a href="/View/manage-products.php">Quản lý sản phẩm</a>
+        <?php endif; ?>
     </nav>
 
     <div class="icons">
@@ -71,9 +74,9 @@ $categories = $ctl->getCategories();
         <div class="fas fa-user" id="login-btn"></div>
     </div>
 <!-- search-form starts -->
-    <form action="/index.php" method="GET" class="search-form">
+    <form action="/View/product-list.php" method="GET" class="search-form">
         <input type="search" id="search-box" name="search_query" placeholder="Tìm Kiếm ... ">
-        <label for="search-box" class="fas fa-search"></label>
+        <button type="submit" class="search-submit fas fa-search" aria-label="Tìm kiếm"></button>
     </form>
 <!-- search-form ends -->
  
@@ -134,7 +137,7 @@ $categories = $ctl->getCategories();
 <!-- home section starts -->
 <section class="home" id="home">
     <div class="content">
-        <h3>fresh <span>phố</span></h3>
+        <h3>Fresh <span>phố</span></h3>
         <p>nơi tụ họp của những loại thực phẩm tươi ngon, chất lượng vượt trội với mức giá vô cùng hợp lí</p>
     </div>
 </section>

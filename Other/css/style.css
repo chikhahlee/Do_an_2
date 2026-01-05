@@ -8,6 +8,7 @@
   --border: 0.2rem solid rgba(0, 0, 0, 0.1);
   --outline: 0.1rem solid rgba(0, 0, 0, 0.1);
   --outline-hover: 0.2rem solid var(--black);
+  --header-height: 9.6rem; /* unified header height */
 }
 
 * {
@@ -26,7 +27,7 @@ html {
   font-size: 62.5%;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  scroll-padding-top: 7rem;
+  scroll-padding-top: 12rem;
 }
 
 body {
@@ -74,28 +75,51 @@ section {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 2000; /* ensure header stays above page content */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem 9%;
+  height: var(--header-height);
+  padding: 0 9%;
   background: #fff;
   box-shadow: var(--box-shadow);
 }
 
 .header .navbar {
+  flex: 1 1 auto;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 1.5rem;
+  justify-content: center;
+  gap: 6rem; /* slightly reduced spacing */
+}
+
+/* hide mobile menu button by default on desktop */
+#menu-btn {
+  display: none;
+}
+
+.header .navbar a {
+  font-size: 2rem; /* slightly smaller nav text */
+  color: var(--black);
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* small spacing for icons inside nav links */
+.header .navbar a i {
+  margin-right: 0.4rem;
+  font-size: 1.6rem;
 }
 
 .header .navbar .user-status {
   display: flex;
   align-items: center;
   margin-left: 1.5rem;
-  font-size: 1.7rem; 
-  color: var(--black); 
+  font-size: 1.7rem;
+  color: var(--black);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -108,10 +132,10 @@ section {
 .header .navbar .user-status .logout-btn {
   font-size: 1.4rem;
   padding: 0.5rem 1rem;
-  background: #f0f0f0; 
+  background: #f0f0f0;
   color: var(--light-color);
-  border: 0.1rem solid var(--light-color); 
-  margin-top: 0; 
+  border: 0.1rem solid var(--light-color);
+  margin-top: 0;
 }
 
 .header .navbar .user-status .logout-btn:hover {
@@ -120,36 +144,211 @@ section {
   border-color: var(--orange);
 }
 
-.header .login-form {
-    position: absolute;
-    top: 110%;
-    right: -110%;
-    width: 35rem;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: var(--box-shadow);
-    background: #fff;
-    text-align: center;
-}
-
-.header .login-form.active {
-    right: 2rem;
-    transition: 0.4s linear;
-}
-
 .header .login-form,
 .login-form-logged-in {
-    position: absolute; 
-    top: 110%;
-    right: -110%;
-    width: 35rem; 
-    transition: 0.4s linear; 
-    z-index: 1000;
+  position: absolute;
+  top: 110%;
+  right: -120%;
+  width: 30rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.15);
+  background: linear-gradient(180deg, #ffffff, #fbfbfb);
+  text-align: left;
+  transition: right 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+  opacity: 0;
+  transform: translateY(-5px);
+  z-index: 1000;
+  overflow: hidden;
 }
 
 .header .login-form.active,
 .login-form-logged-in.active {
-    right: 2rem; 
+  right: 2rem;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.header .login-form h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--black);
+  text-transform: none;
+  letter-spacing: 0.4px;
+}
+
+.header .login-form .box {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin: 0.6rem 0;
+  font-size: 1.6rem;
+  border-radius: 0.6rem;
+  background: #f7f7f7;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--black);
+}
+
+.header .login-form p {
+  font-size: 1.4rem;
+  color: var(--light-color);
+  margin: 0.6rem 0;
+}
+
+.header .login-form p a {
+  color: var(--orange);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.header .login-form .btn {
+  display: block;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-top: 0.8rem;
+  background: var(--orange);
+  color: #fff;
+  border-radius: 0.6rem;
+  font-size: 1.6rem;
+  border: none;
+  cursor: pointer;
+}
+
+.header .login-form .btn:hover {
+  background: #ff8f2a;
+}
+
+/* Logo sizing and icon group */
+.header .logo img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+  margin: 0 50px;
+}
+
+.header .icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header .icons > div {
+  height: 48px;
+  width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f7f7f7;
+  color: var(--black);
+  font-size: 1.8rem;
+  cursor: pointer;
+  pointer-events: auto; /* ensure icons receive pointer events */
+}
+
+/* ensure icons sit at far right of header */
+.header .icons {
+  margin-left: auto;
+}
+
+/* desktop search-form dropdown near icons */
+.header .search-form {
+  position: absolute;
+  top: 110%;
+  right: -110%;
+  width: 35rem;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--box-shadow);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: 0.25s ease;
+  z-index: 1050;
+}
+
+.header .search-form.active {
+  right: 2rem;
+}
+
+.header .search-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.8rem 1rem;
+  font-size: 1.6rem;
+  border-radius: 0.5rem;
+  background: #f3f3f3;
+  border: none;
+}
+
+.header .search-form .search-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  width: 46px;
+  border-radius: 8px;
+  background: #f3f3f3;
+  color: var(--black);
+  cursor: pointer;
+  font-size: 1.6rem;
+  border: none;
+}
+
+.header .search-form .search-submit:hover {
+  background: var(--orange);
+  color: #fff;
+}
+
+.header .icons > div:hover {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* Home hero section with banner background */
+.home {
+  min-height: 55vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--header-height) + 1.8rem) 9% 6rem; /* align under fixed header */
+  background: url("/Other/image/banner-bg.webp") center/cover no-repeat;
+  text-align: center;
+}
+
+.home .content h3 {
+  font-size: 4.5rem;
+  color: var(--black);
+  text-transform: none;
+}
+
+.home .content h3 span {
+  color: var(--orange);
+}
+
+.home .content p {
+  margin-top: 1.5rem;
+  font-size: 1.9rem;
+  color: var(--light-color);
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header .login-form,
+.login-form-logged-in {
+  position: absolute;
+  top: 110%;
+  right: -110%;
+  width: 35rem;
+  transition: 0.4s linear;
+  z-index: 1000;
+}
+
+.header .login-form.active,
+.login-form-logged-in.active {
+  right: 2rem;
 }
 
 .header .icons div:hover {
@@ -168,7 +367,7 @@ section {
   box-shadow: var(--box-shadow);
   max-height: 450px;
   overflow-y: auto;
-  padding-bottom: 70px;
+  padding-bottom: 0; /* removed large bottom padding to avoid extra gap below checkout */
   display: flex;
   flex-direction: column;
 }
@@ -220,26 +419,82 @@ section {
   margin-top: auto;
 }
 
+/* Center and style the checkout button inside the shopping cart */
+.header .shopping-cart .checkout-area .btn {
+  display: block;
+  width: 85%;
+  max-width: 320px;
+  margin: 1rem auto 0 auto;
+  padding: 0.9rem 1rem;
+  font-size: 1.6rem;
+  border-radius: 0.6rem;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  text-align: center;
+}
+
+/* Smaller, centered logout button in the user menu */
+.header .login-form#user-logout-menu {
+  text-align: center;
+}
+.header .login-form#user-logout-menu .btn {
+  display: block;
+  width: 60%;
+  max-width: 220px;
+  margin: 1rem auto 0 auto;
+  padding: 0.6rem 1rem;
+  font-size: 1.5rem;
+  border-radius: 0.5rem;
+  background: #f3f3f3;
+  color: var(--black);
+  border: 0.12rem solid rgba(0, 0, 0, 0.08);
+}
+.header .login-form#user-logout-menu .btn:hover {
+  background: var(--orange);
+  color: #fff;
+  border-color: var(--orange);
+}
+
 .products .product-slider .swiper-wrapper {
-    display: flex;
+  display: flex;
 }
 
 .products .product-slider .swiper-slide {
-    width: 250px !important;
-    background: #fff;
-    border-radius: .5rem;
-    text-align: center;
-    padding: 1.5rem;
-    border: .1rem solid #ddd;
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
-    margin: 10px;
+  flex: 0 0 26rem !important; /* match category min width (26rem) */
+  max-width: 26rem;
+  background: #fff;
+  border-radius: 0.5rem;
+  text-align: center;
+  padding: 3rem 2rem;
+  box-shadow: var(--box-shadow);
+  outline: var(--outline);
+  outline-offset: -1rem;
+  margin: 10px;
 }
 
+.products .product-slider .swiper-slide:hover {
+  outline: var(--outline-hover);
+  outline-offset: 0rem;
+}
 
 .products .product-slider .swiper-slide img {
-    width: 100%;
-    height: 150px;
-    object-fit: contain;
+  margin: 1rem 0;
+  height: 15rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.products .product-slider .swiper-slide h3 {
+  font-size: 2rem;
+  color: var(--black);
+  line-height: 1.8;
+}
+
+.products .product-slider .swiper-slide .price {
+  font-size: 1.7rem;
+  color: var(--light-color);
+  padding: 1rem 0;
 }
 
 .categories .box-container {
@@ -311,6 +566,77 @@ section {
 .footer .box-container .box .links i {
   color: var(--orange);
   padding-right: 0.5rem;
+}
+
+/* Styles moved from View/manage-products.php */
+.manage-wrap {
+  max-width: 1100px;
+  margin: calc(var(--header-height) + 2rem) auto 2rem;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 0.6rem;
+  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.08);
+}
+
+.manage-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.manage-wrap th,
+.manage-wrap td {
+  padding: 0.8rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.manage-wrap img.thumb {
+  height: 64px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.form-inline {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-inline input[type="text"],
+.form-inline input[type="number"],
+.form-inline select {
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.form-inline input[type="file"] {
+  padding: 0.2rem;
+}
+.small-btn {
+  padding: 0.45rem 0.8rem;
+  font-size: 1.4rem;
+  border-radius: 6px;
+}
+.right {
+  text-align: right;
+}
+.msg {
+  padding: 0.6rem 1rem;
+  background: #e9f7ef;
+  color: #087;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.btn.btn-cancel {
+  background: #f3f3f3;
+  color: #000;
+  border: 1px solid #ddd;
+  margin-left: 4px;
+}
+.btn.btn-delete {
+  background: #fff;
+  color: #c00;
+  border: 1px solid #f2c;
+}
+.manage-wrap hr.sep {
+  margin: 1.5rem 0;
 }
 
 .footer .box-container .box .links:hover i {
@@ -393,42 +719,95 @@ section {
     display: inline-block;
   }
 
-.header .search-form {
-  width: 90%;
-}
+  /* On mobile, hide the action icons by default (only show hamburger).
+     When .icons has class .expanded (toggled by JS), show them. */
+  .header .icons > div:not(#menu-btn) {
+    display: none;
+  }
 
-.header .navbar {
-  flex-direction: column;
-  align-items: flex-start;
-  position: absolute;
-  top: 110%;
-  right: -110%;
-  width: 30rem;
-  box-shadow: var(--box-shadow);
-  border-radius: 0.5rem;
-  background: #fff;
-  padding-top: 1rem;
-}
+  .header .icons.expanded > div:not(#menu-btn) {
+    display: inline-flex;
+  }
+
+  /* style search form for mobile: hidden until active */
+  .header .search-form {
+    position: absolute;
+    top: calc(var(--header-height) + 0.8rem);
+    right: 2rem;
+    width: calc(100% - 4rem);
+    max-width: 40rem;
+    padding: 0.8rem 1rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: var(--box-shadow);
+    transform-origin: top right;
+    display: none;
+    z-index: 1100;
+  }
+
+  .header .search-form.active {
+    display: flex;
+  }
+
+  .header .search-form input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 1rem;
+    font-size: 1.6rem;
+    border-radius: 0.5rem;
+    background: #f3f3f3;
+    border: none;
+  }
+
+  .header .search-form label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    width: 46px;
+    border-radius: 8px;
+    background: #f3f3f3;
+    color: var(--black);
+    cursor: pointer;
+    font-size: 1.6rem;
+  }
+
+  .header .search-form {
+    width: 90%;
+  }
+
+  .header .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    top: 110%;
+    right: -110%;
+    width: 30rem;
+    box-shadow: var(--box-shadow);
+    border-radius: 0.5rem;
+    background: #fff;
+    padding-top: 1rem;
+  }
 
   .header .navbar.active {
     right: 2rem;
     transition: 0.4s linear;
   }
 
-.header .navbar a {
-  font-size: 2rem;
-  margin: 2rem 2.5rem;
-  display: block;
-}
+  .header .navbar a {
+    font-size: 2rem;
+    margin: 2rem 2.5rem;
+    display: block;
+  }
 
-.header .navbar .user-status {
-  margin: 0 2.5rem 2rem; 
-  font-size: 2rem;
-}
-  
-.header .navbar .user-status .logout-btn {
-  font-size: 1.8rem;
-}
+  .header .navbar .user-status {
+    margin: 0 2.5rem 2rem;
+    font-size: 2rem;
+  }
+
+  .header .navbar .user-status .logout-btn {
+    font-size: 1.8rem;
+  }
 }
 
 @media (max-width: 450px) {
@@ -446,5 +825,46 @@ section {
 
   .footer .box-container .box .payment-img {
     margin: 2rem auto;
+  }
+}
+
+/* Invoice page styles (desktop + mobile) */
+.invoice-wrap {
+  margin: calc(var(--header-height) + 2rem) auto 2rem;
+  max-width: 1200px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 0.6rem;
+  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.06);
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.invoice-table th,
+.invoice-table td {
+  padding: 1rem 0.8rem;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 1.6rem;
+  text-align: left;
+}
+.invoice-table th {
+  background: #fafafa;
+  color: var(--light-color);
+  font-weight: 600;
+}
+.invoice-table td.right {
+  text-align: right;
+}
+
+/* Active link highlight removed to keep nav uniform */
+
+/* responsive tweaks for invoice table */
+@media (max-width: 768px) {
+  .invoice-table th,
+  .invoice-table td {
+    font-size: 1.4rem;
+    padding: 0.8rem;
   }
 }

@@ -8,12 +8,16 @@ $products = [];
 $heading = "Danh sách <span>sản phẩm</span>";
 $search_query = '';
 
-// --- LẤY THÔNG BÁO LỖI ĐĂNG NHẬP TỪ PROCESS CART ---
+// --- LẤY THÔNG BÁO LỖI ĐĂNG NHẬP / THANH TOÁN ---
 $login_alert_message = null;
 if (isset($_SESSION['login_alert'])) {
     $login_alert_message = $_SESSION['login_alert'];
-    // Xóa thông báo khỏi Session sau khi lấy ra để nó không xuất hiện lại
     unset($_SESSION['login_alert']);
+}
+$checkout_error_message = null;
+if (isset($_SESSION['checkout_error'])) {
+    $checkout_error_message = $_SESSION['checkout_error'];
+    unset($_SESSION['checkout_error']);
 }
 // --- END LẤY THÔNG BÁO ---
 
@@ -64,7 +68,7 @@ if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
     </style>
 </head>
 <body>
-<!-- thông báo đăng nhập -->
+<!-- thông báo đăng nhập / lỗi thanh toán -->
 <?php if ($login_alert_message): ?>
 <div class="login-alert">
     <?php echo htmlspecialchars($login_alert_message); ?>
@@ -80,6 +84,18 @@ if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
 </script>
 <?php endif; ?>
 
+<?php if (!empty($checkout_error_message)): ?>
+<div class="login-alert" style="background:#ffecec; color:#900;">
+    <?php echo htmlspecialchars($checkout_error_message); ?>
+</div>
+<script>
+    setTimeout(function() {
+        const alertBox = document.querySelector('.login-alert[style]');
+        if (alertBox) alertBox.style.display = 'none';
+    }, 7000);
+</script>
+<?php endif; ?>
+
 <!-- header starts -->
 <header class="header">
 
@@ -91,6 +107,12 @@ if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
         <a href="/index.php">Trang Chủ</a>
         <a href="/View/categories-list.php">Danh Mục</a>
         <a href="/View/product-list.php">Sản Phẩm</a>
+        <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] && empty($_SESSION['is_admin'])): ?>
+            <a href="/View/invoices.php">Hóa Đơn</a>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['is_admin'])): ?>
+            <a href="/View/manage-products.php">Quản lý sản phẩm</a>
+        <?php endif; ?>
     </nav>
 
     <div class="icons">
@@ -100,9 +122,9 @@ if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
         <div class="fas fa-user" id="login-btn"></div>
     </div>
 <!-- search-form starts -->
-    <form action="/index.php" method="GET" class="search-form">
+    <form action="/View/product-list.php" method="GET" class="search-form">
         <input type="search" id="search-box" name="search_query" placeholder="Tìm Kiếm ... ">
-        <label for="search-box" class="fas fa-search"></label>
+        <button type="submit" class="search-submit fas fa-search" aria-label="Tìm kiếm"></button>
     </form>
 <!-- search-form ends -->
  
@@ -167,7 +189,7 @@ if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
 <!-- home section starts -->
 <section class="home" id="home">
     <div class="content">
-        <h3>fresh <span>phố</span></h3>
+        <h3>Fresh <span>phố</span></h3>
         <p>nơi tụ họp của những loại thực phẩm tươi ngon, chất lượng vượt trội với mức giá vô cùng hợp lí</p>
     </div>
 </section>

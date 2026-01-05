@@ -77,6 +77,54 @@ class ProductModel {
         return $products;
     }
 
+    public function addProduct($ten, $gia, $anh = null, $idDanhmuc = null) {
+        $sql = "INSERT INTO sanpham (ten, gia, anh, idDanhmuc) VALUES (?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("sisi", $ten, $gia, $anh, $idDanhmuc);
+            $res = $stmt->execute();
+            $insertId = $stmt->insert_id;
+            $stmt->close();
+            return $res ? $insertId : false;
+        }
+        return false;
+    }
+
+    public function updateProduct($id, $ten, $gia, $anh = null, $idDanhmuc = null) {
+        if ($anh !== null) {
+            $sql = "UPDATE sanpham SET ten = ?, gia = ?, anh = ?, idDanhmuc = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt) {
+                $stmt->bind_param("sisii", $ten, $gia, $anh, $idDanhmuc, $id);
+                $res = $stmt->execute();
+                $stmt->close();
+                return $res;
+            }
+        } else {
+            $sql = "UPDATE sanpham SET ten = ?, gia = ?, idDanhmuc = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt) {
+                $stmt->bind_param("siii", $ten, $gia, $idDanhmuc, $id);
+                $res = $stmt->execute();
+                $stmt->close();
+                return $res;
+            }
+        }
+        return false;
+    }
+
+    public function deleteProduct($id) {
+        $sql = "DELETE FROM sanpham WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("i", $id);
+            $res = $stmt->execute();
+            $stmt->close();
+            return $res;
+        }
+        return false;
+    }
+
     public function __destruct() {
         if ($this->conn) {
             $this->conn->close();
