@@ -4,7 +4,7 @@ require_once __DIR__ . '/../Controller/ProductsController.php';
 $ctl = new ProductController();
 $products = $ctl->getProducts();
 
-// Only allow admin users to access this page
+// chỉ cho phép admin truy cập
 if (empty($_SESSION['is_admin'])) {
     header('Location: /index.php');
     exit;
@@ -30,7 +30,6 @@ if (isset($_SESSION['admin_msg'])) {
     <title>Quản lý sản phẩm</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/Other/css/style.css">
-    <!-- All manage-products styles moved into /Other/css/style.css -->
 </head>
 <body>
 <header class="header">
@@ -55,13 +54,15 @@ if (isset($_SESSION['admin_msg'])) {
     </div>
 </header>
 
+
 <section class="manage-wrap">
     <h2>Quản lý sản phẩm</h2>
-
+    
     <?php if ($admin_msg): ?>
         <div class="msg"><?php echo htmlspecialchars($admin_msg); ?></div>
-    <?php endif; ?>
-
+        <?php endif; ?>
+        
+<!-- thêm sản phẩm -->
     <h3><?php echo $editProduct ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'; ?></h3>
     <form action="/Controller/processProduct.php?action=<?php echo $editProduct ? 'edit' : 'add'; ?>" method="POST" enctype="multipart/form-data" class="form-inline">
         <?php if ($editProduct): ?>

@@ -129,6 +129,7 @@ try {
 </header>
 <!-- header ends -->
 
+<!-- invoice detail starts -->
 <section class="manage-wrap invoice-wrap">
     <h1>Hóa đơn #<?php echo htmlspecialchars($invoice['id']); ?></h1>
     <p>Ngày: <?php echo htmlspecialchars($invoice['created_at']); ?></p>
@@ -136,7 +137,7 @@ try {
         <thead>
             <tr>
                 <th>Sản phẩm</th>
-                <th>Đơn giá</th>
+                <th class="center">Đơn giá</th>
                 <th>Số lượng</th>
                 <th style="text-align:right;">Thành tiền</th>
             </tr>
@@ -145,7 +146,7 @@ try {
             <?php $total = 0; foreach ($items as $it): $line = $it['price'] * $it['quantity']; $total += $line; ?>
             <tr>
                 <td><?php echo htmlspecialchars($it['product_name']); ?></td>
-                <td class="right"><?php echo number_format($it['price'], 0, '.', ','); ?> VNĐ</td>
+                <td class="center"><?php echo number_format($it['price'], 0, '.', ','); ?> VNĐ</td>
                 <td><?php echo (int)$it['quantity']; ?></td>
                 <td class="right"><?php echo number_format($line, 0, '.', ','); ?> VNĐ</td>
             </tr>
@@ -162,6 +163,7 @@ try {
         <a href="/View/invoices.php" class="btn">Quay về danh sách hóa đơn</a>
     </div>
 </section>
+<!-- invoice detail ends -->
 
 </body>
 </html>

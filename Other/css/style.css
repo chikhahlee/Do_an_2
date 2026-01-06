@@ -617,6 +617,10 @@ section {
 .right {
   text-align: right;
 }
+.invoice-table th.center,
+.invoice-table td.center {
+  text-align: center;
+}
 .msg {
   padding: 0.6rem 1rem;
   background: #e9f7ef;

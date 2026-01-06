@@ -7,12 +7,12 @@ if ($conn->connect_error) {
 }
 $conn->set_charset("utf8");
 
-// XỬ LÝ ĐĂNG NHẬP
+// xử lí đăng nhập
 if (isset($_POST['login_submit'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // include 'role' so we can detect admin users from DB
+    // kiểm tra xem role nào từ db
     $sql = "SELECT id, email, password, ten, role FROM users WHERE email = ? LIMIT 1";
     $stmt = $conn->prepare($sql);
     
@@ -28,7 +28,6 @@ if (isset($_POST['login_submit'])) {
                 $_SESSION['user_name'] = $user['ten'];
                 $_SESSION['is_logged_in'] = true;
 
-                // mark admin based on DB role if available, otherwise fallback to configured admin emails
                 $isAdmin = false;
                 if (isset($user['role']) && $user['role'] === 'admin') {
                     $isAdmin = true;

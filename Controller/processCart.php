@@ -21,16 +21,18 @@ $session_id = session_id();
 
 require_once "../Controller/ProductsController.php";
 
+// khởi tạo giỏ hàng trong SESSION
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-$action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? ''; 
 $id = $_GET['id'] ?? 0;
 $id = (int)$id;
 
 switch ($action) {
 
+// thêm sản phẩm vào giỏ 
     case 'add':
         if (isset($_SESSION['cart'][$id])) {
             $_SESSION['cart'][$id]['quantity']++;
@@ -55,8 +57,8 @@ switch ($action) {
         $stmt_check->execute();
         $result = $stmt_check->get_result();
 
+// cập nhật số lượng sản phẩm vào giỏ
         if ($result->num_rows > 0) {
-            // cập nhật số lượng
             $sql_update = "UPDATE cart SET soLuong = ? WHERE session_id = ? AND id = ?";
             $stmt_update = $conn->prepare($sql_update);
             $stmt_update->bind_param("isi", $new_quantity, $session_id, $id);
@@ -71,6 +73,7 @@ switch ($action) {
         
         break;
 
+// xóa sản phẩm khỏi giỏ
     case 'remove':
         unset($_SESSION['cart'][$id]);
 
@@ -80,7 +83,7 @@ switch ($action) {
         $stmt_delete->execute();
         
         break;
-
+// update giỏ hàng
     case 'update':
         $quantity = intval($_GET['quantity'] ?? 0);
 

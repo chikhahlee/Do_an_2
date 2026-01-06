@@ -8,7 +8,7 @@ $products = [];
 $heading = "Danh sách <span>sản phẩm</span>";
 $search_query = '';
 
-// --- LẤY THÔNG BÁO LỖI ĐĂNG NHẬP / THANH TOÁN ---
+// thông báo lỗi đăng nhập
 $login_alert_message = null;
 if (isset($_SESSION['login_alert'])) {
     $login_alert_message = $_SESSION['login_alert'];
@@ -19,15 +19,14 @@ if (isset($_SESSION['checkout_error'])) {
     $checkout_error_message = $_SESSION['checkout_error'];
     unset($_SESSION['checkout_error']);
 }
-// --- END LẤY THÔNG BÁO ---
 
-// --- LOGIC XỬ LÝ TÌM KIẾM ---
+// xử lí tìm kiếm
 if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
     $search_query = htmlspecialchars(trim($_GET['search_query']));
     $products = $ctl->searchProducts($search_query);
     $heading = "Kết Quả Tìm Kiếm cho: <span>\"{$search_query}\"</span>";
     
-// --- LOGIC LỌC THEO DANH MỤC ---
+// lọc theo danh mục
 } else {
     $category_id = isset($_GET['category_id']) ? intval($_GET['category_id']) : 0;
     

@@ -4,14 +4,15 @@ require_once __DIR__ . '/ProductsController.php';
 
 $ctl = new ProductController();
 
-// Simple router for add/edit/delete
+// lấy action từ request
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 
-// Helper to sanitize input
+// hàm tiện ích để lấy dữ liệu POST an toàn
 function get_post($k) {
     return isset($_POST[$k]) ? trim($_POST[$k]) : null;
 }
 
+// thêm sản phẩm
 if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $ten = get_post('ten');
     $gia = (int)get_post('gia');
@@ -21,7 +22,7 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['anh']) && $_FILES['anh']['error'] === UPLOAD_ERR_OK) {
         $tmp = $_FILES['anh']['tmp_name'];
         $orig = basename($_FILES['anh']['name']);
-        $targetDir = __DIR__ . '/../Other/image/';
+        $targetDir = __DIR__ . '/../Other/image/'; 
         if (!is_dir($targetDir)) mkdir($targetDir, 0755, true);
         $safeName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $orig);
         if (move_uploaded_file($tmp, $targetDir . $safeName)) {
@@ -35,6 +36,7 @@ if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
+// update sản phẩm
 if ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $ten = get_post('ten');
@@ -59,6 +61,7 @@ if ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
+// xóa sản phẩm
 if ($action === 'delete') {
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     $res = $ctl->deleteProductById($id);
@@ -67,6 +70,5 @@ if ($action === 'delete') {
     exit;
 }
 
-// fallback
 header('Location: /View/manage-products.php');
 exit;
