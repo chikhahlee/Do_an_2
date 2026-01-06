@@ -26,19 +26,19 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-$action = $_GET['action'] ?? ''; 
-$id = $_GET['id'] ?? 0;
-$id = (int)$id;
+$action = $_GET['action'] ?? '';
+$id = (int)($_GET['id'] ?? 0);
 
 switch ($action) {
 
-// thêm sản phẩm vào giỏ 
+    // thêm sản phẩm
     case 'add':
+
         if (isset($_SESSION['cart'][$id])) {
             $_SESSION['cart'][$id]['quantity']++;
         } else {
             $ctl = new ProductController();
-            $p = $ctl->getProductById($id); 
+            $p = $ctl->getProductById($id);
 
             $_SESSION['cart'][$id] = [
                 'id' => $p->id,
@@ -51,61 +51,39 @@ switch ($action) {
 
         $new_quantity = $_SESSION['cart'][$id]['quantity'];
 
-        $sql_check = "SELECT id FROM cart WHERE session_id = ? AND id = ?";
-        $stmt_check = $conn->prepare($sql_check);
-        $stmt_check->bind_param("si", $session_id, $id);
-        $stmt_check->execute();
-        $result = $stmt_check->get_result();
+        // kiểm tra sản phẩm đã có trong DB cart chưa
+        $sql_check = "SELECT id FROM cart 
+                      WHERE session_id = '$session_id' AND id = $id";
+        $result = $conn->query($sql_check);
 
-// cập nhật số lượng sản phẩm vào giỏ
-        if ($result->num_rows > 0) {
-            $sql_update = "UPDATE cart SET soLuong = ? WHERE session_id = ? AND id = ?";
-            $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param("isi", $new_quantity, $session_id, $id);
-            $stmt_update->execute();
+        if ($result && $result->num_rows > 0) {
+            // thêm sản phẩm khi đã có trong cart
+            $sql_update = "UPDATE cart 
+                           SET soLuong = $new_quantity 
+                           WHERE session_id = '$session_id' AND id = $id";
+            $conn->query($sql_update);
         } else {
-            $sql_insert = "INSERT INTO cart (session_id, id, soLuong) VALUES (?, ?, ?)";
-            $stmt_insert = $conn->prepare($sql_insert);
-            $stmt_insert->bind_param("sii", $session_id, $id, $new_quantity);
-            $stmt_insert->execute();
+            // thêm mới sản phẩm khi chưa có trong cart
+            $sql_insert = "INSERT INTO cart (session_id, id, soLuong)
+                           VALUES ('$session_id', $id, $new_quantity)";
+            $conn->query($sql_insert);
         }
-        $stmt_check->close();
-        
+
         break;
 
-// xóa sản phẩm khỏi giỏ
+    // xóa sản phẩm khỏi cart
     case 'remove':
+
         unset($_SESSION['cart'][$id]);
 
-        $sql_delete = "DELETE FROM cart WHERE session_id = ? AND id = ?";
-        $stmt_delete = $conn->prepare($sql_delete);
-        $stmt_delete->bind_param("si", $session_id, $id);
-        $stmt_delete->execute();
-        
+        $sql_delete = "DELETE FROM cart 
+                       WHERE session_id = '$session_id' AND id = $id";
+        $conn->query($sql_delete);
+
         break;
-// update giỏ hàng
-    case 'update':
-        $quantity = intval($_GET['quantity'] ?? 0);
 
-        if ($quantity <= 0) {
-            unset($_SESSION['cart'][$id]);
-
-            $sql_delete = "DELETE FROM cart WHERE session_id = ? AND id = ?";
-            $stmt_delete = $conn->prepare($sql_delete);
-            $stmt_delete->bind_param("si", $session_id, $id);
-            $stmt_delete->execute();
-            
-        } else {
-
-            $_SESSION['cart'][$id]['quantity'] = $quantity;
-
-            $sql_update = "UPDATE cart SET soLuong = ? WHERE session_id = ? AND id = ?";
-            $stmt_update = $conn->prepare($sql_update);
-            $stmt_update->bind_param("isi", $quantity, $session_id, $id);
-            $stmt_update->execute();
-        }
-        break;
 }
+
 
 $conn->close(); 
 

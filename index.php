@@ -3,11 +3,9 @@ session_start();
 require_once __DIR__ . '/Controller/CategoriesController.php';
 require_once __DIR__ . '/Controller/ProductsController.php';
 
-// tìm kiếm (Giữ nguyên logic chuyển hướng tìm kiếm)
-if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
-    // Nếu có từ khóa tìm kiếm, chuyển hướng sang trang product-list.php để xử lý
-    $search_query = urlencode(trim($_GET['search_query']));
-    header("Location: /View/product-list.php?search_query={$search_query}");
+// chuyển hướng sang product-list để tìm kiếm sản phẩm
+if (!empty($_GET['search_query'])) {
+    header("Location: /View/product-list.php?search_query=" . urlencode(trim($_GET['search_query'])));
     exit;
 }
 
@@ -103,7 +101,7 @@ $products = $ctl_product->getProducts();
 <!-- login-form starts -->
 <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in']): ?>
     <div class="login-form active" id="user-logout-menu">
-        <h3>Xin chào, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Bạn'); ?>!</h3>
+        <h3>Xin chào, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Bạn'); ?></h3>
         <a href="/Controller/processLogout.php" class="btn">Đăng Xuất</a>
     </div>
 <?php else: ?>

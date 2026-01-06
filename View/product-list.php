@@ -20,7 +20,7 @@ if (isset($_SESSION['checkout_error'])) {
     unset($_SESSION['checkout_error']);
 }
 
-// xử lí tìm kiếm
+// xử lí kết quả tìm kiếm
 if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
     $search_query = htmlspecialchars(trim($_GET['search_query']));
     $products = $ctl->searchProducts($search_query);
