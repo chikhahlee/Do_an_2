@@ -58,14 +58,11 @@ switch ($action) {
 
         if ($result && $result->num_rows > 0) {
             // thêm sản phẩm khi đã có trong cart
-            $sql_update = "UPDATE cart 
-                           SET soLuong = $new_quantity 
-                           WHERE session_id = '$session_id' AND id = $id";
+            $sql_update = "UPDATE cart SET soLuong = $new_quantity WHERE session_id = '$session_id' AND id = $id";
             $conn->query($sql_update);
         } else {
             // thêm mới sản phẩm khi chưa có trong cart
-            $sql_insert = "INSERT INTO cart (session_id, id, soLuong)
-                           VALUES ('$session_id', $id, $new_quantity)";
+            $sql_insert = "INSERT INTO cart (session_id, id, soLuong) VALUES ('$session_id', $id, $new_quantity)";
             $conn->query($sql_insert);
         }
 
@@ -76,8 +73,7 @@ switch ($action) {
 
         unset($_SESSION['cart'][$id]);
 
-        $sql_delete = "DELETE FROM cart 
-                       WHERE session_id = '$session_id' AND id = $id";
+        $sql_delete = "DELETE FROM cart WHERE session_id = '$session_id' AND id = $id";
         $conn->query($sql_delete);
 
         break;

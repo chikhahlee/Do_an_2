@@ -9,7 +9,6 @@ class InvoiceModel {
         return $conn;
     }
 
-    // Ensure hoadon tables exist; if not, try to create them from the SQL migration
     private function ensureTablesExist($conn) {
         $dbRow = $conn->query("SELECT DATABASE() AS db");
         if (!$dbRow) return;
@@ -19,7 +18,6 @@ class InvoiceModel {
         $res = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = '$dbEsc' AND table_name IN ('hoadon','hoadon_items')");
         if ($res) {
             $row = $res->fetch_assoc();
-            // if either table is missing (less than 2 found), run creation SQL
             if (intval($row['cnt']) < 2) {
                 $sqlFile = __DIR__ . '/../Other/sql/create_invoices.sql';
                 if (file_exists($sqlFile)) {
@@ -36,12 +34,9 @@ class InvoiceModel {
 
     public function getInvoicesByUserOrSession($user_id = null, $session_id = null) {
         $conn = $this->getConnection();
-        // try to detect which table set exists: prefer 'invoices'/'invoice_items' if present
         $hasInvoices = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'invoices'");
         if ($hasInvoices && intval($hasInvoices->fetch_assoc()['cnt']) > 0) {
             $mainTable = 'invoices';
-        } else {
-            $mainTable = 'hoadon';
         }
 
         if ($user_id && $user_id != 0) {
@@ -70,16 +65,11 @@ class InvoiceModel {
     public function getInvoiceById($invoice_id) {
         $conn = $this->getConnection();
 
-        // choose which table naming is present
         $hasInvoices = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'invoices'");
         if ($hasInvoices && intval($hasInvoices->fetch_assoc()['cnt']) > 0) {
             $mainTable = 'invoices';
             $itemTable = 'invoice_items';
             $itemFk = 'invoice_id';
-        } else {
-            $mainTable = 'hoadon';
-            $itemTable = 'hoadon_items';
-            $itemFk = 'hoadon_id';
         }
 
         $sql = "SELECT * FROM {$mainTable} WHERE id = ?";
