@@ -15,7 +15,6 @@ if (empty($_SESSION['cart'])) {
     exit;
 }
 
-// kết nối DB
 $conn = new mysqli("localhost", "root", "", "doan_2");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -38,10 +37,9 @@ foreach ($_SESSION['cart'] as $c) {
     $total += $c['gia'] * $c['quantity'];
 }
 
-$user_id = $_SESSION['user_id'] ?? null; // nếu có
+$user_id = $_SESSION['user_id'] ?? null;
 $session_id = session_id();
 
-// sử dụng transaction để rollback nếu có lỗi
 $conn->begin_transaction();
 try {
 

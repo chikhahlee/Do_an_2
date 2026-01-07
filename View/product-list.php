@@ -67,7 +67,7 @@ if (isset($_GET['search_query']) && !empty(trim($_GET['search_query']))) {
     </style>
 </head>
 <body>
-<!-- thông báo đăng nhập / lỗi thanh toán -->
+<!-- thông báo đăng nhập-->
 <?php if ($login_alert_message): ?>
 <div class="login-alert">
     <?php echo htmlspecialchars($login_alert_message); ?>

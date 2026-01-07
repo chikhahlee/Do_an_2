@@ -10,10 +10,12 @@ class ProductModel {
         $this->conn->set_charset("utf8");
     }
 
+    // hiển thị tất cả sản phẩm
     public function getAllProducts() {
         $sql = "SELECT * FROM sanpham";
         $result = $this->conn->query($sql);
         $products = [];
+
         if ($result) {
             while ($row = $result->fetch_object()) {
                 $products[] = $row;
@@ -23,106 +25,95 @@ class ProductModel {
         return $products;
     }
 
+    // lấy sản phẩm theo danh mục
     public function getProductsByCategory($cat_id) {
         $products = [];
-        $sql = "SELECT * FROM sanpham WHERE idDanhmuc = ?";
-        $stmt = $this->conn->prepare($sql);
-        if ($stmt) {
-            $stmt->bind_param("i", $cat_id);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            while ($row = $res->fetch_object()) {
+        $cat_id = (int)$cat_id;
+
+        $sql = "SELECT * FROM sanpham WHERE idDanhmuc = $cat_id";
+        $result = $this->conn->query($sql);
+
+        if ($result) {
+            while ($row = $result->fetch_object()) {
                 $products[] = $row;
             }
-            $res->free();
-            $stmt->close();
+            $result->free();
         }
         return $products;
     }
 
+    // lấy sản phẩm theo id
     public function getProductById($id) {
-        $sql = "SELECT * FROM sanpham WHERE id = ? LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        if ($stmt) {
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $res = $stmt->get_result();
-            $product = ($res && $res->num_rows > 0) ? $res->fetch_object() : null;
-            if ($res) $res->free();
-            $stmt->close();
+        $id = (int)$id;
+
+        $sql = "SELECT * FROM sanpham WHERE id = $id LIMIT 1";
+        $result = $this->conn->query($sql);
+
+        if ($result && $result->num_rows > 0) {
+            $product = $result->fetch_object();
+            $result->free();
             return $product;
         }
         return null;
     }
-    
+
+    // tìm kiếm sản phẩm
     public function searchProducts($query) {
         $products = [];
-        
-        $search_param = "%" . $query . "%"; 
-        
-        // Truy vấn SQL tìm kiếm theo cột 'ten'
-        $sql = "SELECT * FROM sanpham WHERE ten LIKE ?";
-        $stmt = $this->conn->prepare($sql);
-        
-        if ($stmt) {
-            $stmt->bind_param("s", $search_param); 
-            $stmt->execute();
-            $res = $stmt->get_result();
-            while ($row = $res->fetch_object()) {
+        $query = $this->conn->real_escape_string($query);
+
+        $sql = "SELECT * FROM sanpham WHERE ten LIKE '%$query%'";
+        $result = $this->conn->query($sql);
+
+        if ($result) {
+            while ($row = $result->fetch_object()) {
                 $products[] = $row;
             }
-            $res->free();
-            $stmt->close();
+            $result->free();
         }
         return $products;
     }
 
+    // thêm sản phẩm
     public function addProduct($ten, $gia, $anh = null, $idDanhmuc = null) {
-        $sql = "INSERT INTO sanpham (ten, gia, anh, idDanhmuc) VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        if ($stmt) {
-            $stmt->bind_param("sisi", $ten, $gia, $anh, $idDanhmuc);
-            $res = $stmt->execute();
-            $insertId = $stmt->insert_id;
-            $stmt->close();
-            return $res ? $insertId : false;
-        }
-        return false;
+        $ten = $this->conn->real_escape_string($ten);
+        $gia = (int)$gia;
+        $idDanhmuc = $idDanhmuc !== null ? (int)$idDanhmuc : "NULL";
+        $anh = $anh ? "'" . $this->conn->real_escape_string($anh) . "'" : "NULL";
+
+        $sql = "INSERT INTO sanpham (ten, gia, anh, idDanhmuc)
+                VALUES ('$ten', $gia, $anh, $idDanhmuc)";
+
+        $res = $this->conn->query($sql);
+        return $res ? $this->conn->insert_id : false;
     }
 
+    // update sản phẩm
     public function updateProduct($id, $ten, $gia, $anh = null, $idDanhmuc = null) {
+        $id = (int)$id;
+        $ten = $this->conn->real_escape_string($ten);
+        $gia = (int)$gia;
+        $idDanhmuc = $idDanhmuc !== null ? (int)$idDanhmuc : "NULL";
+
         if ($anh !== null) {
-            $sql = "UPDATE sanpham SET ten = ?, gia = ?, anh = ?, idDanhmuc = ? WHERE id = ?";
-            $stmt = $this->conn->prepare($sql);
-            if ($stmt) {
-                $stmt->bind_param("sisii", $ten, $gia, $anh, $idDanhmuc, $id);
-                $res = $stmt->execute();
-                $stmt->close();
-                return $res;
-            }
+            $anh = $this->conn->real_escape_string($anh);
+            $sql = "UPDATE sanpham 
+                    SET ten = '$ten', gia = $gia, anh = '$anh', idDanhmuc = $idDanhmuc
+                    WHERE id = $id";
         } else {
-            $sql = "UPDATE sanpham SET ten = ?, gia = ?, idDanhmuc = ? WHERE id = ?";
-            $stmt = $this->conn->prepare($sql);
-            if ($stmt) {
-                $stmt->bind_param("siii", $ten, $gia, $idDanhmuc, $id);
-                $res = $stmt->execute();
-                $stmt->close();
-                return $res;
-            }
+            $sql = "UPDATE sanpham 
+                    SET ten = '$ten', gia = $gia, idDanhmuc = $idDanhmuc
+                    WHERE id = $id";
         }
-        return false;
+
+        return $this->conn->query($sql);
     }
 
+    // xóa sản phẩm
     public function deleteProduct($id) {
-        $sql = "DELETE FROM sanpham WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        if ($stmt) {
-            $stmt->bind_param("i", $id);
-            $res = $stmt->execute();
-            $stmt->close();
-            return $res;
-        }
-        return false;
+        $id = (int)$id;
+        $sql = "DELETE FROM sanpham WHERE id = $id";
+        return $this->conn->query($sql);
     }
 
     public function __destruct() {

@@ -8,7 +8,7 @@
   --border: 0.2rem solid rgba(0, 0, 0, 0.1);
   --outline: 0.1rem solid rgba(0, 0, 0, 0.1);
   --outline-hover: 0.2rem solid var(--black);
-  --header-height: 9.6rem; /* unified header height */
+  --header-height: 9.6rem;
 }
 
 * {
@@ -75,7 +75,7 @@ section {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 2000; /* ensure header stays above page content */
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -90,16 +90,15 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6rem; /* slightly reduced spacing */
+  gap: 6rem;
 }
 
-/* hide mobile menu button by default on desktop */
 #menu-btn {
   display: none;
 }
 
 .header .navbar a {
-  font-size: 2rem; /* slightly smaller nav text */
+  font-size: 2rem; 
   color: var(--black);
   padding: 0.6rem 1rem;
   font-weight: 500;
@@ -108,7 +107,6 @@ section {
   gap: 0.6rem;
 }
 
-/* small spacing for icons inside nav links */
 .header .navbar a i {
   margin-right: 0.4rem;
   font-size: 1.6rem;
@@ -217,7 +215,6 @@ section {
   background: #ff8f2a;
 }
 
-/* Logo sizing and icon group */
 .header .logo img {
   width: 60px;
   height: 60px;
@@ -243,15 +240,13 @@ section {
   color: var(--black);
   font-size: 1.8rem;
   cursor: pointer;
-  pointer-events: auto; /* ensure icons receive pointer events */
+  pointer-events: auto;
 }
 
-/* ensure icons sit at far right of header */
 .header .icons {
   margin-left: auto;
 }
 
-/* desktop search-form dropdown near icons */
 .header .search-form {
   position: absolute;
   top: 110%;
@@ -306,13 +301,12 @@ section {
   color: #fff;
 }
 
-/* Home hero section with banner background */
 .home {
   min-height: 55vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--header-height) + 1.8rem) 9% 6rem; /* align under fixed header */
+  padding: calc(var(--header-height) + 1.8rem) 9% 6rem;
   background: url("/Other/image/banner-bg.webp") center/cover no-repeat;
   text-align: center;
 }
@@ -367,7 +361,7 @@ section {
   box-shadow: var(--box-shadow);
   max-height: 450px;
   overflow-y: auto;
-  padding-bottom: 0; /* removed large bottom padding to avoid extra gap below checkout */
+  padding-bottom: 0;
   display: flex;
   flex-direction: column;
 }
@@ -419,7 +413,6 @@ section {
   margin-top: auto;
 }
 
-/* Center and style the checkout button inside the shopping cart */
 .header .shopping-cart .checkout-area .btn {
   display: block;
   width: 85%;
@@ -434,7 +427,6 @@ section {
   text-align: center;
 }
 
-/* Smaller, centered logout button in the user menu */
 .header .login-form#user-logout-menu {
   text-align: center;
 }
@@ -456,50 +448,85 @@ section {
   border-color: var(--orange);
 }
 
+.products {
+  padding: 4rem 9%;
+  background: #f3f3f3;
+}
+
+.products .heading {
+  text-align: center;
+  font-size: 3rem;
+  color: var(--black);
+  margin-bottom: 3rem;
+}
+
+
+.products .product-slider {
+  padding: 1rem 0;
+}
+
 .products .product-slider .swiper-wrapper {
-  display: flex;
+  align-items: stretch;
 }
 
 .products .product-slider .swiper-slide {
-  flex: 0 0 26rem !important; /* match category min width (26rem) */
-  max-width: 26rem;
   background: #fff;
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 2.5rem 2rem;
   box-shadow: var(--box-shadow);
   outline: var(--outline);
   outline-offset: -1rem;
-  margin: 10px;
+  transition: 0.3s ease;
+  height: auto;
 }
 
 .products .product-slider .swiper-slide:hover {
   outline: var(--outline-hover);
-  outline-offset: 0rem;
+  outline-offset: 0;
+  transform: translateY(-5px);
 }
 
 .products .product-slider .swiper-slide img {
-  margin: 1rem 0;
   height: 15rem;
-  width: auto;
+  max-width: 100%;
   object-fit: contain;
+  margin: 1rem auto;
 }
 
 .products .product-slider .swiper-slide h3 {
   font-size: 2rem;
   color: var(--black);
-  line-height: 1.8;
+  line-height: 1.5;
+  margin: 1rem 0;
 }
 
 .products .product-slider .swiper-slide .price {
-  font-size: 1.7rem;
-  color: var(--light-color);
-  padding: 1rem 0;
+  font-size: 1.8rem;
+  color: var(--orange);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.products .product-slider .swiper-slide .btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  font-size: 1.6rem;
+  color: #040404;
+  background: #fff;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.products .product-slider .swiper-slide .btn:hover {
+  background: var(--orange);
 }
 
 .categories .box-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
 
@@ -531,7 +558,7 @@ section {
 
 .categories .box-container .box p {
   font-size: 1.7rem;
-  color: var(--light-color);
+  color: #f3f3f3;
   line-height: 1.8;
   padding: 1rem 0;
 }
@@ -568,7 +595,6 @@ section {
   padding-right: 0.5rem;
 }
 
-/* Styles moved from View/manage-products.php */
 .manage-wrap {
   max-width: 1100px;
   margin: calc(var(--header-height) + 2rem) auto 2rem;
@@ -723,8 +749,6 @@ section {
     display: inline-block;
   }
 
-  /* On mobile, hide the action icons by default (only show hamburger).
-     When .icons has class .expanded (toggled by JS), show them. */
   .header .icons > div:not(#menu-btn) {
     display: none;
   }
@@ -733,7 +757,6 @@ section {
     display: inline-flex;
   }
 
-  /* style search form for mobile: hidden until active */
   .header .search-form {
     position: absolute;
     top: calc(var(--header-height) + 0.8rem);
@@ -832,7 +855,6 @@ section {
   }
 }
 
-/* Invoice page styles (desktop + mobile) */
 .invoice-wrap {
   margin: calc(var(--header-height) + 2rem) auto 2rem;
   max-width: 1200px;
@@ -862,13 +884,162 @@ section {
   text-align: right;
 }
 
-/* Active link highlight removed to keep nav uniform */
-
-/* responsive tweaks for invoice table */
 @media (max-width: 768px) {
-  .invoice-table th,
-  .invoice-table td {
-    font-size: 1.4rem;
-    padding: 0.8rem;
-  }
+    .header {
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .header .logo img {
+        margin: 0;
+        width: 50px;
+    }
+
+    .header .icons {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem; 
+    }
+
+    .header .icons > div {
+        display: inline-flex !important; 
+        height: 4rem;
+        width: 4rem;
+        font-size: 1.6rem;
+        background: #f7f7f7;
+        justify-content: center;
+        align-items: center;
+        border-radius: .5rem;
+    }
+
+    #menu-btn {
+        order: 10;
+    }
+
+    .header .navbar {
+        position: absolute;
+        top: 100%; 
+        right: -110%;
+        width: 25rem;
+        background: #fff;
+        border-radius: .5rem;
+        box-shadow: var(--box-shadow);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem 0;
+        transition: 0.4s linear; 
+    }
+
+    .header .navbar.active {
+        right: 2rem;
+    }
+
+    .header .navbar a {
+        margin: 1rem 2.5rem;
+        font-size: 2rem;
+        display: block;
+    }
+
+    .header .shopping-cart,
+    .header .search-form,
+    .header .login-form {
+        position: absolute;
+        top: 110%;
+        right: -110%;
+        width: 35rem;
+        max-height: 400px;
+        overflow-y: auto;
+        background: #fff;
+        border-radius: .5rem;
+        box-shadow: var(--box-shadow);
+        transition: 0.4s linear;
+        z-index: 1000;
+    }
+
+    .header .shopping-cart.active,
+    .header .search-form.active,
+    .header .login-form.active {
+        right: 2rem; 
+    }
+
+    section {
+        padding: 2rem;
+    }
+
+    .home {
+        min-height: 40vh;
+        padding-top: calc(var(--header-height) + 2rem);
+        background-position: center;
+    }
+
+    .home .content h3 {
+        font-size: 3rem;
+    }
+
+    .categories .box-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem;
+    }
+
+    .categories .box-container .box {
+        padding: 2rem 1rem;
+        background: #fff;
+        border-radius: .5rem;
+        box-shadow: var(--box-shadow);
+    }
+
+    .categories .box-container .box img {
+        height: 10rem; 
+        width: 100%;
+        object-fit: contain;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .categories .box-container {
+        grid-template-columns: 1fr !important;
+        gap: 2rem; 
+    }
+
+    .categories .box-container .box {
+        padding: 3rem 2rem; 
+    }
+
+    .categories .box-container .box img {
+        height: 15rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .categories .box-container .box h3 {
+        font-size: 2rem;
+    }
+
+    section {
+        padding: 2rem 5% !important;
+    }
+
+    .header .logo img {
+        width: 3.5rem;
+    }
+    
+    .header .icons > div {
+        height: 3.2rem;
+        width: 3.2rem;
+    }
+
+.products .product-slider .swiper-slide {
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.products .product-slider:not(.swiper-initialized) .swiper-slide:not(:first-child) {
+    display: none;
+}
 }

@@ -1,11 +1,10 @@
 <?php
 session_start();
-// only allow logged-in non-admin users to access invoice details
 if (!isset($_SESSION['is_logged_in']) || !$_SESSION['is_logged_in'] || !empty($_SESSION['is_admin'])) {
     header("Location: /View/product-list.php");
     exit;
 }
-$hide_user_popup = true; // vô hiệu hóa popup "Xin chào" trên trang chi tiết hóa đơn
+$hide_user_popup = true;
 require_once __DIR__ . '/../Model/InvoiceModel.php';
 $invoiceModel = new InvoiceModel();
 

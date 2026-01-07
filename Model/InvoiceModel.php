@@ -1,5 +1,6 @@
 <?php
 class InvoiceModel {
+
     private function getConnection() {
         $conn = new mysqli("localhost", "root", "", "doan_2");
         if ($conn->connect_error) {
@@ -9,92 +10,82 @@ class InvoiceModel {
         return $conn;
     }
 
-    private function ensureTablesExist($conn) {
-        $dbRow = $conn->query("SELECT DATABASE() AS db");
-        if (!$dbRow) return;
-        $db = $dbRow->fetch_object()->db;
-        $dbEsc = $conn->real_escape_string($db);
-
-        $res = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = '$dbEsc' AND table_name IN ('hoadon','hoadon_items')");
-        if ($res) {
-            $row = $res->fetch_assoc();
-            if (intval($row['cnt']) < 2) {
-                $sqlFile = __DIR__ . '/../Other/sql/create_invoices.sql';
-                if (file_exists($sqlFile)) {
-                    $sql = file_get_contents($sqlFile);
-                    $stmts = array_filter(array_map('trim', explode(';', $sql)));
-                    foreach ($stmts as $st) {
-                        if (empty($st)) continue;
-                        $conn->query($st);
-                    }
-                }
-            }
-        }
-    }
-
+    // lấy danh sách hóa đơn 
     public function getInvoicesByUserOrSession($user_id = null, $session_id = null) {
         $conn = $this->getConnection();
-        $hasInvoices = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'invoices'");
-        if ($hasInvoices && intval($hasInvoices->fetch_assoc()['cnt']) > 0) {
-            $mainTable = 'invoices';
-        }
 
         if ($user_id && $user_id != 0) {
-            $sql = "SELECT * FROM {$mainTable} WHERE user_id = ? ORDER BY created_at DESC";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) {
-                throw new \Exception('DB error: ' . $conn->error);
-            }
-            $stmt->bind_param("i", $user_id);
+            $user_id = (int)$user_id;
+            $sql = "
+                SELECT *
+                FROM invoices
+                WHERE user_id = $user_id
+                ORDER BY created_at DESC
+            ";
         } else {
-            $sql = "SELECT * FROM {$mainTable} WHERE session_id = ? ORDER BY created_at DESC";
-            $stmt = $conn->prepare($sql);
-            if (!$stmt) {
-                throw new \Exception('DB error: ' . $conn->error);
-            }
-            $stmt->bind_param("s", $session_id);
+            $session_id = $conn->real_escape_string($session_id);
+            $sql = "
+                SELECT *
+                FROM invoices
+                WHERE session_id = '$session_id'
+                ORDER BY created_at DESC
+            ";
         }
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $invoices = $res->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
+
+        $res = $conn->query($sql);
+        if (!$res) {
+            throw new Exception("DB Error: " . $conn->error);
+        }
+
+        $data = [];
+        while ($row = $res->fetch_assoc()) {
+            $data[] = $row;
+        }
+
         $conn->close();
-        return $invoices;
+        return $data;
     }
 
+    // lấy chi tiết hóa đơn
     public function getInvoiceById($invoice_id) {
         $conn = $this->getConnection();
+        $invoice_id = (int)$invoice_id;
 
-        $hasInvoices = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'invoices'");
-        if ($hasInvoices && intval($hasInvoices->fetch_assoc()['cnt']) > 0) {
-            $mainTable = 'invoices';
-            $itemTable = 'invoice_items';
-            $itemFk = 'invoice_id';
+        $sqlInvoice = "
+            SELECT *
+            FROM invoices
+            WHERE id = $invoice_id
+        ";
+        $res = $conn->query($sqlInvoice);
+        if (!$res) {
+            throw new Exception("DB Error: " . $conn->error);
         }
 
-        $sql = "SELECT * FROM {$mainTable} WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new \Exception('DB error: ' . $conn->error);
-        }
-        $stmt->bind_param("i", $invoice_id);
-        $stmt->execute();
-        $res = $stmt->get_result();
         $invoice = $res->fetch_assoc();
-        $stmt->close();
-
-        $sql2 = "SELECT * FROM {$itemTable} WHERE {$itemFk} = ?";
-        $stmt2 = $conn->prepare($sql2);
-        if (!$stmt2) {
-            throw new \Exception('DB error: ' . $conn->error);
+        if (!$invoice) {
+            return null;
         }
-        $stmt2->bind_param("i", $invoice_id);
-        $stmt2->execute();
-        $res2 = $stmt2->get_result();
-        $items = $res2->fetch_all(MYSQLI_ASSOC);
-        $stmt2->close();
+
+        $sqlItems = "
+            SELECT *
+            FROM invoice_items
+            WHERE invoice_id = $invoice_id
+        ";
+        $res2 = $conn->query($sqlItems);
+        if (!$res2) {
+            throw new Exception("DB Error: " . $conn->error);
+        }
+
+        $items = [];
+        while ($row = $res2->fetch_assoc()) {
+            $items[] = $row;
+        }
+
         $conn->close();
 
-        return ['invoice' => $invoice, 'items' => $items];
+        return [
+            'invoice' => $invoice,
+            'items'   => $items
+        ];
     }
 }

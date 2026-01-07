@@ -32,6 +32,8 @@ if (isset($_SESSION['admin_msg'])) {
     <link rel="stylesheet" href="/Other/css/style.css">
 </head>
 <body>
+
+<!-- header starts -->
 <header class="header">
     <a href="/index.php" class="logo">
         <img src="/Other/image/iconlogo.png" alt="logo" class="logo-img">
@@ -53,8 +55,9 @@ if (isset($_SESSION['admin_msg'])) {
         <div class="fas fa-user" id="login-btn"></div>
     </div>
 </header>
+<!-- header ends -->
 
-
+<!-- mangage-products starts -->
 <section class="manage-wrap">
     <h2>Quản lý sản phẩm</h2>
     
@@ -110,6 +113,6 @@ if (isset($_SESSION['admin_msg'])) {
     </table>
 
 </section>
-
+<!-- mangage-products starts -->
 </body>
 </html>
